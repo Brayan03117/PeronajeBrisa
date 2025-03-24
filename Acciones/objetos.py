@@ -4,7 +4,7 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 import math
 def pinta_cono(x, y, z, radio_base, altura, color, rotacion):
-    """Dibuja un cono con posición, color y rotación opcional."""
+    
     glPushMatrix()
     glTranslatef(x, y, z)
     glRotatef(rotacion[0], 1, 0, 0)
@@ -24,7 +24,8 @@ def pinta_cono(x, y, z, radio_base, altura, color, rotacion):
     glPopMatrix()
 
 def pinta_cubo(x, y, z, size, color):
-    """Dibuja un cubo manualmente, centrado en (x, y, z), con tamaño y color."""
+   
+    glEnable(GL_DEPTH_TEST)  # Habilita el buffer de profundidad
     hs = size / 2.0  # mitad del tamaño para centrarlo
     glPushMatrix()
     glTranslatef(x, y, z)
@@ -72,7 +73,6 @@ def pinta_cubo(x, y, z, size, color):
     glPopMatrix()
 
 def pinta_piramide(x, y, z, base, altura, color):
-    """Dibuja una pirámide de base cuadrada centrada en (x, y, z)."""
     hs = base / 2.0  # mitad del tamaño base
     glPushMatrix()
     glTranslatef(x, y, z)
@@ -112,11 +112,7 @@ def pinta_piramide(x, y, z, base, altura, color):
     glPopMatrix()
 
 def pinta_prisma(x, y, z, escala, rotacion, color):
-    """
-    Dibuja un prisma rectangular (cuboid) con posición, escala y rotación personalizada.
-    escala: (sx, sy, sz) → tamaño en cada eje.
-    rotacion: (rx, ry, rz) → grados a rotar en cada eje.
-    """
+
     glPushMatrix()
     glTranslatef(x, y, z)
     glRotatef(rotacion[0], 1, 0, 0)
@@ -174,14 +170,60 @@ def pinta_esfera(x, y, z, radio, color):
     gluSphere(quad, radio, 20, 20)
     glPopMatrix()
 
-def pinta_bocaFeliz(x, y, z, radio, angulo_inicio, angulo_fin, color):
-    """Dibuja un arco como boca en el plano XY, de angulo_inicio a angulo_fin (grados)."""
+
+def pinta_boca(x, y, z, radius, segments, rotacion, color):###cambiar
+   
     glPushMatrix()
     glTranslatef(x, y, z)
+    
+    glRotatef(rotacion[0], 1, 0, 0)
+    
     glColor3f(*color)
-    glBegin(GL_LINE_STRIP)
-    for ang in range(angulo_inicio, angulo_fin+1, 5):
-        rad = math.radians(ang)
-        glVertex3f(radio * math.cos(rad), radio * math.sin(rad), 0)
+
+    glBegin(GL_TRIANGLE_FAN)
+    glVertex2f(0, 0)  # Centro del semicírculo
+
+    for i in range(segments + 1):
+        angle = math.pi * (i / segments)  # De 0 a π (180 grados)
+        x = radius * math.cos(angle)
+        y = radius * math.sin(angle)
+        glVertex2f(x, y)
+
+    glEnd()
+
+    glPopMatrix()
+
+def pinta_linea(x,y,z,x1, y1, z1, x2, y2, z2, color, grosor):
+    
+    glPushMatrix()
+    glTranslatef(x, y, z)
+
+    glColor3f(*color)   # Establece el color de la línea
+    glLineWidth(grosor)  # Define el grosor de la línea
+    glBegin(GL_LINES)
+    glVertex3f(x1, y1, z1)  # Punto inicial
+    glVertex3f(x2, y2, z2)  # Punto final
+    glEnd()
+
+    glPopMatrix()
+
+
+def pinta_arco(x, y, z, radius=0.5, start_angle=50, end_angle=130, segments=50, thickness=7):
+    
+    glPushMatrix()
+
+    glTranslatef(x,y,z)
+
+    glLineWidth(thickness)  # Establece el grosor de la línea
+    glBegin(GL_LINE_STRIP)  # Dibuja solo las líneas del arco
+
+    for i in range(segments + 1):
+        angle = math.radians(start_angle + (end_angle - start_angle) * i / segments)
+        x = radius * math.cos(angle)
+        y = radius * math.sin(angle)
+        glVertex2f(x, y)
+
     glEnd()
     glPopMatrix()
+
+

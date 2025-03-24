@@ -1,3 +1,4 @@
+
 import pygame
 from OpenGL.GLU import *
 from OpenGL.GL import *
@@ -5,13 +6,20 @@ from OpenGL.GLUT import *
 from pygame.locals import *
 from Acciones import escenarios as es
 from Acciones import sonidos as sd
-from src import personaje as per
+from src.personaje import personaje
+
+expresion=1
 
 camara_z = -9
 rotacion_y = 0.0
 rotacion_x = 0.0
+
+velocidad_zoom = 0.5
+
+
 pygame.init()
 pygame.mixer.init()
+glutInit(sys.argv)
 display = (800, 600)
 pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 glClearColor(0.5, 0.8, 1.0, 1)
@@ -20,16 +28,6 @@ glTranslatef(0.0, -1.0, camara_z)
 glEnable(GL_DEPTH_TEST)
 fondoAc='Imagenes/escenario1.jpg' #Controla el fondo actual
 
-personaje_visible = True
-emocion1 = False
-emocion2 = False
-emocion3 = False
-emocion4 = False
-emocion5 = False
-accion1=False
-accion2=False
-accion3=False
-accion4=False
 
 #Centra y hace invisible el cursor
 pygame.event.set_grab(True)
@@ -43,6 +41,50 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
+
+
+            if event.key == K_w:#acercar
+                camara_z += 0.5
+                glLoadIdentity()
+                gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+                glTranslatef(0.0, -1.0, camara_z)
+            if event.key == K_s:#alejar
+                camara_z -= 0.5
+                glLoadIdentity()
+                gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+                glTranslatef(0.0, -1.0, camara_z)
+            if event.key == K_z:#original
+                camara_z = -9
+                rotacion_x = 0
+                rotacion_y = 0
+                glLoadIdentity()
+                gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+                glTranslatef(0.0, -1.0, camara_z)
+            if event.key == K_q:# arriba
+                rotacion_x += 2
+                glLoadIdentity()
+                gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+                glTranslatef(0.0, -1.0, camara_z)
+            if event.key == K_e:# abajo
+                rotacion_x -= 2
+                glLoadIdentity()
+                gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+                glTranslatef(0.0, -1.0, camara_z)
+            if event.key == K_d:# der
+                rotacion_y -= 2
+                glLoadIdentity()
+                gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+                glTranslatef(0.0, -1.0, camara_z)
+            if event.key == K_a:# Izq
+                rotacion_y += 2
+                glLoadIdentity()
+                gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+                glTranslatef(0.0, -1.0, camara_z)
+            
+            
+
+
+
             if event.key == pygame.K_1:
                 fondoAc='Imagenes/escenario1.jpg'#Se busca desde la carpeta donde esta el main, lo estabas buscando afuera de la carpeta
                 sd.sonidoOn('Sonidos/sonido1.mp3')
@@ -58,35 +100,55 @@ while running:
             if event.key == pygame.K_5:
                 fondoAc='Imagenes/escenario5.png'
                 sd.sonidoOn('Sonidos/sonido5.mp3')
-            #if event.key == pygame.K_p:
-                #sd.sonidoOn('Sonidos/musica.wav') 
-            #if event.key == pygame.K_o:
-                #sd.sonidoOff()
-            if event.key == pygame.K_w:
-                glTranslatef(0, 0, -0.5)
-            if event.key == pygame.K_s:
-                glTranslatef(0, 0, 0.5)
-            if event.key == pygame.K_a:
-                glTranslatef(-0.5, 0, 0)
-            if event.key == pygame.K_d:
-                glTranslatef(0.5, 0, 0)
-            if event.key == pygame.K_r:
-                camara_z = -9
-                rotacion_x = 0
-                rotacion_y = 0
-                glLoadIdentity()
-                gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
-                glTranslatef(0.0, -1.0, camara_z)
-            if event.key == pygame.K_UP:
-                camara_z += 0.5
-                glLoadIdentity()
-                gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
-                glTranslatef(0.0, -1.0, camara_z)
-            if event.key == pygame.K_DOWN:
-                camara_z -= 0.5
-                glLoadIdentity()
-                gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
-                glTranslatef(0.0, -1.0, camara_z)
+                
+            if event.key == pygame.K_6:# prender sonido general
+                fondoAc='Imagenes/escenario5.png'
+                sd.sonidoOn('Sonidos/sonido5.mp3')
+            if event.key == pygame.K_7:# apagar sonido general
+                fondoAc='Imagenes/escenario5.png'
+                sd.sonidoOn('Sonidos/sonido5.mp3')
+
+
+
+
+            if event.key == pygame.K_g:
+                
+                fondoAc='Imagenes/escenario1.jpg'
+                sd.sonidoOn('Sonidos/sonido1.mp3')
+                expresion=1
+            if event.key == pygame.K_h:
+                
+                fondoAc='Imagenes/escenario1.jpg'
+                sd.sonidoOn('Sonidos/sonido1.mp3')
+                expresion=2
+            
+            if event.key == pygame.K_j:
+                
+                fondoAc='Imagenes/escenario1.jpg'
+                sd.sonidoOn('Sonidos/sonido1.mp3')
+                expresion=3
+                
+            if event.key == pygame.K_k:
+                
+                fondoAc='Imagenes/escenario1.jpg'
+                sd.sonidoOn('Sonidos/sonido1.mp3')
+                expresion=4
+                
+            if event.key == pygame.K_l:
+                
+                fondoAc='Imagenes/escenario1.jpg'
+                sd.sonidoOn('Sonidos/sonido1.mp3')
+                
+                expresion=5
+                
+            if event.key == pygame.K_m:
+                
+                fondoAc='Imagenes/escenario1.jpg'
+                sd.sonidoOn('Sonidos/sonido1.mp3')
+                expresion=6
+                
+            
+                
 
     #Se pueden movimientos mas fluidos con el mouse
     mouse_dx, mouse_dy = pygame.mouse.get_rel()
@@ -101,16 +163,14 @@ while running:
 
 
     glColor3f(1.0, 1.0, 1.0)
+    #sd.sonidoOn('Sonidos/sonido1.mp3')
     es.pinta_escenario(fondoAc) 
 
-    if personaje_visible:
-        per.pinta_Normal()
+    personaje(expresion)
+    
+
     glPopMatrix()
     pygame.display.flip()
     pygame.time.wait(10)
 
 pygame.quit()
-
-
-    
-
