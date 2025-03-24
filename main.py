@@ -147,6 +147,15 @@ while running:
                 sd.sonidoOn('Sonidos/sonido1.mp3')
                 expresion=6
                 
+            #Acciones
+            if event.key == pygame.K_x:#Brazo izquierdo arriba
+                expresion=7
+            if event.key == pygame.K_c:#Ambos brazos arriba
+                expresion=8
+            if event.key == pygame.K_v: #Señalar
+                expresion=9
+            #if event.key == pygame.K_b:
+            #if event.key == pygame.K_n:
             
                 
 
